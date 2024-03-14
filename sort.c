@@ -30,10 +30,70 @@ size_t Size(void* ptr)
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void mergeSort(int pData[], int l, int r)
-{
+{	
+	if (l < r)
+	{	
+		int m = (l + r)/2;	
+		mergeSort(pData, l, m);
+		mergeSort(pData, m+1, r);
+		
+		int i, j, k;
+
+		int n1 = m - l + 1;
+		int n2 = r - m;
+		int* L = Alloc(sizeof(int) * n1);
+		int* R = Alloc(sizeof(int) * n2);
+
+		// Store the data inside the temporary arr
+		for (int i = 0; i < n1; i++)
+		{
+			L[i] = pData[l + i];
+		}
+		for (int j = 0; j < n2; j++)
+		{
+			R[j] = pData[m + 1 + j];
+		}
+		// merge the temppDataas into one
+		i = 0;
+		j = 0;
+		k = l;
+		while (i < n1 && j < n2)
+		{
+			if (L[i] <= R[j])
+			{
+				pData[k] = L[i];
+				i++;
+			}
+			else
+			{
+				pData[k] = R[j];
+				j++;
+			}
+			k++;
+		}
+		
+		while (i<n1)
+		{
+			pData[k] = L[i];
+			i++;
+			k++;
+		}
+
+		while (j < n2)
+		{
+			pData[k] = R[j];
+			j++;
+			k++;
+		}
+
+		DeAlloc(L);
+		DeAlloc(R);
+	}
+	
 }
 
 // parses input file to an integer array
+    
 int parseData(char *inputFileName, int **ppData)
 {
 	FILE* inFile = fopen(inputFileName,"r");
@@ -67,19 +127,20 @@ int parseData(char *inputFileName, int **ppData)
 // prints first and last 100 items in the data array
 void printArray(int pData[], int dataSz)
 {
-	int i, sz = dataSz - 100;
-	printf("\tData:\n\t");
-	for (i=0;i<100;++i)
-	{
-		printf("%d ",pData[i]);
-	}
-	printf("\n\t");
-	
-	for (i=sz;i<dataSz;++i)
-	{
-		printf("%d ",pData[i]);
-	}
-	printf("\n\n");
+    int i, sz = (dataSz > 100 ? dataSz - 100 : 0);
+    int firstHundred = (dataSz < 100 ? dataSz : 100);
+    printf("\tData:\n\t");
+    for (i=0;i<firstHundred;++i)
+    {
+        printf("%d ",pData[i]);
+    }
+    printf("\n\t");
+    
+    for (i=sz;i<dataSz;++i)
+    {
+        printf("%d ",pData[i]);
+    }
+    printf("\n\n");
 }
 
 int main(void)
